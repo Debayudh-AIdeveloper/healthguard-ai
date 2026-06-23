@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Assessment – HealthGuard AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8;">
+        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+      <span>HealthGuard AI</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/predict" class="active">Prediction Form</a></li>
+      <li><a href="/dashboard">Clinical Insights</a></li>
+      <li><a href="/about">About & System Model</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="container animated-view">
+    
+    <!-- Medical Disclaimer Box -->
+    <div class="disclaimer-box">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span><strong>Medical Disclaimer:</strong> This application is for educational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment.</span>
+    </div>
+
+    <!-- Section Heading -->
+    <header style="margin-bottom: 2.5rem; text-align: center;">
+      <h1 style="font-size: 2.25rem; color: var(--primary); font-weight: 800; margin-bottom: 0.5rem;">Diabetes Risk Screening Form</h1>
+      <p style="color: var(--text-muted); font-size: 1.05rem; max-width: 700px; margin: 0 auto;">Input your physical indices and biomarkers carefully. These values are mapped against the clinical model parameters to compute standard hazard values.</p>
+    </header>
+
+    {% if errors %}
+    <div style="background-color: #FEF2F2; border: 1px solid var(--danger); color: #EF4444; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+      <h3 style="font-size: 1rem; font-weight: bold; margin-bottom: 0.5rem;">Validation Alert:</h3>
+      <ul style="list-style-position: inside; font-size: 0.9rem;">
+        {% for error in errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <!-- Real-Time BMI Calculator Helper Block -->
+    <div style="background-color: #F0FDF4; border: 1.5px dashed #22C55E; border-radius: 12px; padding: 1.5rem; margin-bottom: 2.5rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>
+        </svg>
+        <h3 style="color: #15803D; font-size: 1rem; font-weight: 700;">BMI Calculator Helper</h3>
+      </div>
+      <p style="font-size: 0.85rem; color: #166534; margin-bottom: 1rem;">Don't know your BMI value? Enter your weight and height here to calculate and update the BMI input field automatically below.</p>
+      <div style="display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap;">
+        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <label style="font-size: 0.8rem; font-weight: 600; color: #166534;">Weight (kg)</label>
+          <input type="number" id="helper_weight" placeholder="e.g. 70" min="20" max="300" step="any" style="padding: 0.5rem; border: 1px solid #BBF7D0; border-radius: 6px; width: 140px;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <label style="font-size: 0.8rem; font-weight: 600; color: #166534;">Height (cm)</label>
+          <input type="number" id="helper_height" placeholder="e.g. 175" min="100" max="250" step="any" style="padding: 0.5rem; border: 1px solid #BBF7D0; border-radius: 6px; width: 140px;">
+        </div>
+        <p style="font-size: 0.8rem; color: #15803D; font-weight: 500; font-style: italic; margin-bottom: 0.5rem;">Updates live as you type!</p>
+      </div>
+    </div>
+
+    <!-- Main Predictive Form -->
+    <div class="assessment-card">
+      <form action="/predict" method="POST">
+        <div class="form-grid">
+          
+          <!-- 1. Pregnancies -->
+          <div class="form-group">
+            <label for="pregnancies">Pregnancies (Times Pregnant)</label>
+            <input type="number" name="pregnancies" id="pregnancies" min="0" max="20" step="1" required value="0">
+            <span class="field-help">Applicable to female biological indices (Enter 0 if male or non-applicable). Hormones influence pancreatic responses.</span>
+          </div>
+
+          <!-- 2. Glucose -->
+          <div class="form-group">
+            <label for="glucose">Plasma Glucose Concentration (2h OGTT)</label>
+            <input type="number" name="glucose" id="glucose" min="0" max="300" step="1" required placeholder="e.g. 120">
+            <span class="field-help">Normal range is roughly 70-140 mg/dL. Values above 140 indicate high levels, above 200 represents clinical concern.</span>
+          </div>
+
+          <!-- 3. Blood Pressure -->
+          <div class="form-group">
+            <label for="blood_pressure">Diastolic Blood Pressure (mm Hg)</label>
+            <input type="number" name="blood_pressure" id="blood_pressure" min="0" max="200" step="1" required placeholder="e.g. 80">
+            <span class="field-help">Diastolic (lower number) resting metric in mm Hg. Highly correlated with underlying cardiometabolic parameters.</span>
+          </div>
+
+          <!-- 4. Skin Thickness -->
+          <div class="form-group">
+            <label for="skin_thickness">Triceps Skin Fold Thickness (mm)</label>
+            <input type="number" name="skin_thickness" id="skin_thickness" min="0" max="100" step="1" required value="20">
+            <span class="field-help">Thickness value measuring body fat deposits. Serves as a key indicator for peripheral fat reserves.</span>
+          </div>
+
+          <!-- 5. Insulin -->
+          <div class="form-group">
+            <label for="insulin">2-Hour Serum Insulin (mu U/ml)</label>
+            <input type="number" name="insulin" id="insulin" min="0" max="1000" step="1" required value="80">
+            <span class="field-help">Systemic metabolic marker. Baseline fasting values range from 15 to 120 mu U/ml. (If unknown, leave default of 80).</span>
+          </div>
+
+          <!-- 6. BMI (Body Mass Index) -->
+          <div class="form-group">
+            <label for="bmi">Body Mass Index (kg/m²)</label>
+            <input type="number" name="bmi" id="bmi" min="0" max="80" step="0.1" required placeholder="e.g. 26.5">
+            <span class="field-help">High BMI (above 25 indicates overweight, above 30 indicates obesity) indicates high cellular insulin resistance risk.</span>
+          </div>
+
+          <!-- 7. Pedigree Function -->
+          <div class="form-group">
+            <label for="pedigree">Diabetes Pedigree Function Score</label>
+            <input type="number" name="pedigree" id="pedigree" min="0.01" max="3" step="0.001" required placeholder="e.g. 0.471">
+            <span class="field-help">Computes genetic predisposition scores based on family lineage data. Range of typical scoring profiles is 0.1 to 1.5.</span>
+          </div>
+
+          <!-- 8. Age -->
+          <div class="form-group">
+            <label for="age">Age (Years)</label>
+            <input type="number" name="age" id="age" min="1" max="120" step="1" required placeholder="e.g. 35">
+            <span class="field-help">Metabolic rates decrease with older age brackets. Screening is strongly advised starting at age 45.</span>
+          </div>
+
+        </div>
+
+        <!-- Submission and Reset triggers -->
+        <div class="form-actions">
+          <button type="reset" class="btn btn-secondary">
+            Reset Form
+          </button>
+          <button type="submit" class="btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Predict Risk Level
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 <strong>HealthGuard AI</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; margin-top: 0.5rem; color: #64748b;">Designed strictly as an educational machine learning assessment tool.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinical Dataset Insights – HealthGuard AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Load Chart.js CDN for standalone dynamic dashboard visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8;">
+        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+      <span>HealthGuard AI</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/predict">Prediction Form</a></li>
+      <li><a href="/dashboard" class="active">Clinical Insights</a></li>
+      <li><a href="/about">About & System Model</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="container animated-view">
+    
+    <!-- Medical Disclaimer Box -->
+    <div class="disclaimer-box">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span><strong>Medical Disclaimer:</strong> This application is for educational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment.</span>
+    </div>
+
+    <!-- Page Heading -->
+    <header style="margin-bottom: 2.5rem; text-align: center;">
+      <h1 style="font-size: 2.25rem; color: var(--primary); font-weight: 800; margin-bottom: 0.5rem;">Diagnostic Dataset Statistics</h1>
+      <p style="color: var(--text-muted); font-size: 1.05rem; max-width: 750px; margin: 0 auto;">Pima Indians Diabetes Dataset analysis detailing demographic outcomes and machine learning feature importance profiles based on preprocessed training weights.</p>
+    </header>
+
+    <!-- Stat Metrics -->
+    <section class="stats-info-grid">
+      <div class="stat-box">
+        <div class="stat-val">768</div>
+        <div class="stat-lbl">Total Records</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">34.9%</div>
+        <div class="stat-lbl">Diabetic Outcomes</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">120.9</div>
+        <div class="stat-lbl">Mean Glucose</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">32.0</div>
+        <div class="stat-lbl">Mean BMI Value</div>
+      </div>
+    </section>
+
+    <!-- Side by Side Interactive Charts -->
+    <section class="dashboard-charts-grid">
+      
+      <!-- Chart A: Dataset Class breakdown -->
+      <div class="chart-card">
+        <h3>Pima Indian Dataset Targets Distribution</h3>
+        <div style="height: 280px; position: relative;">
+          <canvas id="classDistChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart B: ML Parameter Importance coefficients -->
+      <div class="chart-card">
+        <h3>Model Feature Coefficients (Beta Impact Weights)</h3>
+        <div style="height: 280px; position: relative;">
+          <!-- Inject the stats.importance values inside data attributes for script.js to read -->
+          <canvas id="importanceChart" data-values="{{ stats.importance|tojson }}"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Additional Statistics Breakdown -->
+    <section class="assessment-card" style="margin-top: 3rem; padding: 2.5rem;">
+      <h3 style="font-size: 1.35rem; color: var(--primary); margin-bottom: 1.25rem;">Physiological Parameter Distribution Ranges</h3>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">The Pima Indian cohort registers critical markers that represent elevated risk factors of metabolic failure relative to broader geographic segments. Check out typical distributions below:</p>
+      
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--border); color: var(--primary);">
+              <th style="padding: 0.75rem 1rem; font-weight: 700;">Biomarker Feature</th>
+              <th style="padding: 0.75rem 1rem; font-weight: 700;">Diagnostic Meaning</th>
+              <th style="padding: 0.75rem 1rem; font-weight: 700;">Cohort Mean Value</th>
+              <th style="padding: 0.75rem 1rem; font-weight: 700;">Clinical Standard Target</th>
+            </tr>
+          </thead>
+          <tbody style="color: #475569;">
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 0.75rem 1rem; font-weight: 600; color: var(--primary);">Glucose Concentration</td>
+              <td style="padding: 0.75rem 1rem;">Post 2-hour clinical blood sugar value after drinking a specialized sugar solution during standard clinics.</td>
+              <td style="padding: 0.75rem 1rem; font-weight: 600;">120.9 mg/dL</td>
+              <td style="padding: 0.75rem 1rem; color: var(--success); font-weight: 600;">&lt; 140 mg/dL</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 0.75rem 1rem; font-weight: 600; color: var(--primary);">Body Mass Index (BMI)</td>
+              <td style="padding: 0.75rem 1rem;">Calculates general adipose accumulation based on biological height and weight quotients.</td>
+              <td style="padding: 0.75rem 1rem; font-weight: 600;">32.0 kg/m²</td>
+              <td style="padding: 0.75rem 1rem; color: var(--success); font-weight: 600;">18.5 - 24.9 kg/m²</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 0.75rem 1rem; font-weight: 600; color: var(--primary);">Blood pressure</td>
+              <td style="padding: 0.75rem 1rem;">Standard resting diastolic arterial resistance value. High figures increase vascular strain.</td>
+              <td style="padding: 0.75rem 1rem; font-weight: 600;">69.1 mmHg</td>
+              <td style="padding: 0.75rem 1rem; color: var(--success); font-weight: 600;">60 - 80 mmHg</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 0.75rem 1rem; font-weight: 600; color: var(--primary);">Age Quotient</td>
+              <td style="padding: 0.75rem 1rem;">General age bracket of the patient cohort. Metabolic health values naturally taper as aging proceeds.</td>
+              <td style="padding: 0.75rem 1rem; font-weight: 600;">33.2 Years</td>
+              <td style="padding: 0.75rem 1rem; color: var(--success); font-weight: 600;">Proactive screening &gt; 45</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 <strong>HealthGuard AI</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; margin-top: 0.5rem; color: #64748b;">Designed strictly as an educational machine learning assessment tool.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

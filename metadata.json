@@ -1,0 +1,8 @@
+{
+  "name": "Remix: HealthGuard AI",
+  "description": "An AI-powered web app that predicts diabetes risk using machine learning, providing personalized health recommendations and interactive insights.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
